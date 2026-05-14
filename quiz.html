@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>刷题</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <h1 id="quiz-title">刷题</h1>
+  <nav><a href="index.html">← 主页</a></nav>
+</header>
+<main>
+  <div class="quiz-bar">
+    <span class="chapter-name" id="chapter-label">—</span>
+    <div class="tabs" id="type-tabs">
+      <button class="tab active" data-type="all">全部</button>
+      <button class="tab" data-type="single">单选</button>
+      <button class="tab" data-type="multi">多选</button>
+      <button class="tab" data-type="judge">判断</button>
+    </div>
+    <div class="tabs" id="mode-tabs">
+      <button class="tab" data-mode="order">顺序</button>
+      <button class="tab active" data-mode="shuffle">乱序</button>
+    </div>
+  </div>
+
+  <div class="progress-bar"><div id="progress-fill" style="width:0%"></div></div>
+
+  <div id="quiz-area">
+    <div class="loading">加载中…</div>
+  </div>
+
+  <footer class="status">
+    <span><strong id="stat-cursor">0</strong> / <strong id="stat-total">0</strong></span>
+    <span>本轮正确率 <strong id="stat-acc">—</strong></span>
+    <span>错题数 <strong id="stat-wrong">0</strong></span>
+  </footer>
+</main>
+<script type="module" src="js/quiz.js"></script>
+</body>
+</html>
