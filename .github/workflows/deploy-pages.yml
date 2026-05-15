@@ -1,0 +1,62 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build static site
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ ! -f "1-题库.md" ] || [ ! -f "2-补充知识点.md" ]; then
+            echo "Missing required markdown files: 1-题库.md and/or 2-补充知识点.md"
+            echo "Add them to the repository root so GitHub Pages can serve a self-contained site."
+            exit 1
+          fi
+
+          rm -rf dist
+          mkdir -p dist
+
+          cp index.html quiz.html notes.html style.css dist/
+          cp -R js src dist/
+          cp "1-题库.md" "2-补充知识点.md" dist/
+
+          sed -i "s|fetch('../1-题库.md')|fetch('./1-题库.md')|g" dist/js/parser.js
+          sed -i "s|fetch('../2-补充知识点.md')|fetch('./2-补充知识点.md')|g" dist/js/notes.js
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
